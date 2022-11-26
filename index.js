@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -18,13 +18,23 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 //available categories
 async function run(){
     try{
+        //collections
         const categoryCollection = client.db('iSellsDotCom').collection('categories');
 
+        //all categories
         app.get('/categories', async(req,res)=>{
             const query = {};
             const cursor = categoryCollection.find(query)
             const categories = await cursor.toArray()
             res.send(categories);
+        })
+
+        //specific category
+        app.get('/categories/:id',async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const category = await categoryCollection.findOne(query);
+            res.send(category);
         })
         
     }
@@ -34,22 +44,7 @@ async function run(){
 }
 run().catch(err=>{console.error(err)})
 
-/* async function run() {
-    try {
-        const categoriesCollection = client.db("iSellsDotCom").collection("categories");
 
-        app.get('/categoriesCollection', async(req,res)=>{
-            const query = {};
-            const options = await categoriesCollection.find(query).toArray();
-            res.send(options);
-        })
-
-    }
-    finally {
-
-    }
-}
-run().catch(console.log) */
 app.get('/', async (req, res) => {
     res.send('iSells.com server is running');
 })
