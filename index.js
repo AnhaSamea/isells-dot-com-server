@@ -16,6 +16,7 @@ console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 //available categories
+
 async function run(){
     try{
         //collections
